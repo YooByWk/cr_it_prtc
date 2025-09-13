@@ -1,0 +1,36 @@
+name: IT News Crawler
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install feedparser pyyaml
+
+      - name: Run crawler
+        run: python crawler.py
+
+      - name: Push to Wiki
+        run: |
+          git clone https://github.com/${{ github.repository }}.wiki.git wiki
+          cp -r out_md/* wiki/
+          cd wiki
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Update news on $(date +'%Y-%m-%d')"
+          git push
