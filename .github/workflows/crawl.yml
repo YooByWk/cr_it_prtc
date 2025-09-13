@@ -26,7 +26,7 @@ jobs:
 
       - name: Push to Wiki
         run: |
-          git clone https://github.com/${{ github.repository }}.wiki.git wiki
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git wiki
           cp -r out_md/* wiki/
           cd wiki
           git config user.name "github-actions"
