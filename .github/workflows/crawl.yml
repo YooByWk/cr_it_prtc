@@ -25,12 +25,15 @@ jobs:
         run: python crawler.py
 
       - name: Push to Wiki
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
         run: |
-          git clone https://$TOKEN@github.com/YooByWk/cr_it_prtc.wiki.git wiki
+          WIKI_URL="https://$TOKEN@github.com/YooByWk/cr_it_prtc.wiki.git"
+          git clone $WIKI_URL wiki
           cp -r out_md/* wiki/
           cd wiki
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add .
           git diff-index --quiet HEAD || git commit -m "Update news on $(date +'%Y-%m-%d')"
-          git push
+          git push origin main
